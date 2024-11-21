@@ -73,7 +73,7 @@ class PostsSearch(ListView):
         return context
 
 
-class PostCreate(CreateView):
+class PostCreate(PermissionRequiredMixin,CreateView):
     permission_required = ('main.add_post',)
     form_class = PostForm
     model = Post
