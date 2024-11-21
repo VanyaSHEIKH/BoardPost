@@ -197,8 +197,8 @@ EMAIL_USE_SSL = True
 
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
-MANAGERS = [("n1", "itsvanyka@mail.ru")]
-ADMINS = [("n2", "itsvanyka@mail.ru")]
+MANAGERS = [("n1", "")]
+ADMINS = [("n2", "")]
 
 SERVER_EMAIL = os.getenv('SERVER_EMAIL')  # это будет у нас вместо аргумента FROM в массовой рассылке
 
