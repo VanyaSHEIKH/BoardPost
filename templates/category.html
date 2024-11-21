@@ -1,0 +1,35 @@
+<!--  наследуемся от шаблона default.html, который мы создавали для flatpages -->
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+Category
+{% endblock title %}
+
+{% block content %}
+<h1>Текущая категория</h1>
+<hr>
+{% if category %}
+<dl>
+    <dt>Название
+    <dt>
+    <dd>{{category.category|censor}}</dd>
+    <dt>Дата публикации
+    <dt>
+    <dd>{{category.date_in|date:'M d Y'}}</dd>
+    <dt>Рейтинг категории
+    <dt>
+    <dd>{{category.rating}}</dd>
+</dl>
+{% else %}
+<h3>Такой категории нет!</h3>
+{% endif %}
+{% if messages %}
+<ul>
+    {% for message in messages %}
+    <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock content %}

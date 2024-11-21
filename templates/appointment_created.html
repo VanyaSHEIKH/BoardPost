@@ -1,0 +1,34 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Document</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <h2>{{appointment.client_name}} Спасибо за фидбэк!</h2>-->
+<!--    <p> Вы успешно создали отклик! Дата:{{ appointment.date|date:"d-M-Y" }} Отклик: {{ appointment.message|truncatechars:50 }} </p>-->
+<!--</body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отклик создан</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Спасибо за ваш отклик, {{ appointment.client_name }}!</h2>
+        <p>Вы успешно создали отклик:</p>
+        <ul class="list-group">
+            <li class="list-group-item"><strong>Дата:</strong> {{ appointment.date|date:"d-M-Y" }}</li>
+            <li class="list-group-item"><strong>Сообщение:</strong> {{ appointment.message }}</li>
+        </ul>
+        <a href="{% url 'appointments:make_appointment' %}" class="btn btn-primary mt-3">Создать новый отклик</a>
+    </div>
+</body>
+</html>

@@ -18,7 +18,12 @@ from django.contrib import admin
 from django.urls import path,include
 
 urlpatterns = [
+    path('i18n/', include('django.conf.urls.i18n')),
+    path('', include('protect.urls')),
     path('admin/', admin.site.urls),
     path('pages/', include('django.contrib.flatpages.urls')),
     path('posts/', include('main.urls')),
+    path('sign/', include('sign.urls')),
+    path('accounts/', include('allauth.urls')),
+    path('appointments/', include(('appointment.urls', 'appointments'), namespace='appointments')),
 ]

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои комментарии</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Мои комментарии</h1>
+
+    {% if comments %}
+        <ul id="comments-list">
+            {% for comment in comments %}
+                <li id="comment-{{ comment.id }}">
+                    <strong>Комментарий:</strong> {{ comment.text }}<br>
+                    <strong>К посту:</strong> {{ comment.post.title }}<br>
+                    <strong>Статус:</strong> {% if comment.is_accepted %} Принят {% else %} Ожидает {% endif %}
+                    
+                    <button class="delete-comment" data-id="{{ comment.id }}">Удалить</button>
+                    {% if not comment.is_accepted %}
+                        <button class="accept-comment" data-id="{{ comment.id }}">Принять</button>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>У вас нет комментариев.</p>
+    {% endif %}
+
+    <a href="{% url 'Posts_list' %}">Назад</a>
+
+    <script>
+        $(document).ready(function() {
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    const csrftoken = getCookie('csrftoken');
+
+    $('.delete-comment').click(function() {
+        const commentId = $(this).data('id');
+        $.ajax({
+            type: "POST",
+            url: "{% url 'delete_comment' %}",
+            data: { comment_id: commentId },
+            headers: { "X-CSRFToken": csrftoken },
+            success: function(response) {
+                if (response.success) {
+                    $('#comment-' + commentId).remove();
+                } else {
+                    alert('Ошибка при удалении комментария.');
+                }
+            }
+        });
+    });
+
+    $('.accept-comment').click(function() {
+        const commentId = $(this).data('id');
+        $.ajax({
+            type: "POST",
+            url: "{% url 'accept_comment' %}",
+            data: { comment_id: commentId },
+            headers: { "X-CSRFToken": csrftoken },
+            success: function(response) {
+                if (response.success) {
+                    $('#comment-' + commentId).find('strong:last').text('Принят');
+                    $(this).remove(); // Удаляем кнопку принятия
+                } else {
+                    alert('Ошибка при принятии комментария.');
+                }
+            }
+        });
+    });
+});
+    </script>
+</body>
+</html>
+
+

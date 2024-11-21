@@ -1,0 +1,27 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+Post - {{ post.title|censor }}
+{% endblock title %}
+
+{% block content %}
+<article>
+    <header>
+        <h1>{{ post.title|censor }}</h1>
+        <p><em>{{ post.date_in|date:'d M Y' }}</em></p>
+        <p><strong>Автор: {{ post.author }}</strong></p>
+    </header>
+
+    <section>
+        <h2>Содержание</h2>
+        <p>{{ post.text|censor }}</p>
+    </section>
+
+    <footer>
+        <h3><a href="{% url 'add_comment' post.pk %}">Добавить комментарий</a></h3>  <!-- Ссылка на добавление комментария -->
+    </footer>
+</article>
+
+{% endblock content %}

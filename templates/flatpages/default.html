@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>
+            {% block title %}
+            {% endblock title %}
+        </title>
+        {% load static %}
+        {% load i18n %}
+        {% load tz %}
+
+        <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+        <style>
+            body {background-color: {% if current_time.hour >= 19 or current_time.hour <= 7 %} darkcyan {% else %} powderblue {% endif %};}
+        </style>
+    </head>
+    <body>
+        <!-- Responsive navbar-->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="#">Доска объявлений: MMORPG</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="/posts/">Начальный экран</a></li>
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'Posts_search' %}">Поиск по постам</a></li>
+                        {% if not user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="/accounts/login/">Вход</a></li>
+                        {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'logout_confirm' %}">Выход</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/posts/create/">Опубликовать объявление</a></li>
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="/posts/categories/">Список категорий</a></li>
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="/posts/my_comments/">Список моих комментариев</a></li>
+                        {% if is_not_author %}
+                            <li class="nav-item"><a class="nav-link" href="/sign/upgrade/">Стать автором</a></li>
+                        {% endif %}
+                        {% endif %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="#">Action</a></li>
+                                <li><a class="dropdown-item" href="#">Another action</a></li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <form action="{% url 'set_language' %}" method="POST"> {% csrf_token %} <!-- Не забываем по csrf_token для POST запросов -->
+                        <input type="hidden" name="next" value="{{ redirect_to }}">
+                        <select name="language" id="">
+                            {% get_available_languages as LANGUAGES %} <!-- получаем языки -->
+                            {% get_language_info_list for LANGUAGES as languages %} <!-- Помещаем их в список languages -->
+                            {% for language in languages %} <!-- Итерируясь по списку, выводим их название на языке пользователя и код -->
+                                <option value="{{ language.code }}" {% if language.code == LANGUAGE_CODE %} selected {% endif %}>
+                                    {{ language.name_local }} - {{ language.code }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <input type="submit" value="set">
+                    </form>
+                    {% load tz %}
+                    {% get_current_timezone as TIME_ZONE %}
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <label for="timezone">ЧП:</label>
+                        <select name="timezone">
+                            {% for tz in timezones %}
+                                <option value="{{ tz|last }}"{% if tz|last == TIME_ZONE %} selected{% endif %}>{{ tz|first }}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="submit" value="Set">
+                    </form>
+                </div>
+            </div>
+        </nav>
+        <!-- Page content-->
+        {{ TIME_ZONE }}
+        {{ current_time|timezone:TIME_ZONE|date:"l d N Y H:i" }}
+        {% if not user.is_authenticated %}
+            <p style="text-align: center;"><span style="color: #808080; background-color: #ccffff;">Вы еще не авторизовались </span></p>
+        {% else %}
+            <p style="text-align: center;"><span style="color: #808080; background-color: #ccffff;">Вы вошли как <span style="text-decoration: underline;">{{ user.username }}</span>&nbsp;</span></p>
+        {% endif %}
+        <div class="container">
+            <div class="text-center mt-5">
+                {% block content %}
+                {% endblock content %}
+            </div>
+        </div>
+    </body>
+</html>
+

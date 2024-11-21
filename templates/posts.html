@@ -1,0 +1,68 @@
+<!--  наследуемся от шаблона default.html.html, который мы создавали для flatpages -->
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+<!-- Название страницы -->
+{% block title %}
+Posts
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим все товары -->
+{% block content %}
+<h1 style="text-align: left;">Всего объявлений {{ page_obj.paginator.count }}</h1>
+<h4 style="text-align: right;"><span style="color: #ff0000;"><em>На данной странице доступно: {{posts|length}} количество объявлений</em></span>
+</h4>
+<hr>
+{% if posts %}
+<table>
+    <tr>
+        {% load cache %} <!-- Загружаем кэширование -->
+        {% cache 5 try_stady %}
+        <td>Заголовок</td>
+        <td>Дата публикации</td>
+        <td>Тeкст</td>
+        <td>Категория</td>
+        {% endcache %}
+    </tr>
+    {% for post in posts %}
+    <tr class="{% cycle 'row1' 'row2' %}">
+        <td>{{ post.title|censor }}</td>
+        <td>{{ post.date_in|date:'d M Y' }}</td>
+        <td>{{ post.text|truncatewords:20|censor}}</td>
+        <td>{% for category in post.category.all %}
+            <a href="{% url 'Category_list' %}">{{ category }}</a>
+            {% endfor %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<h2>На данный момент объявления отсутствуют!</h2>
+{% endif %}
+{# Добавляем пагинацию на страницу #}
+<hr>
+{# Информация о предыдущих страницах #}
+{% if page_obj.has_previous %}
+<a href="?page=1">1</a>
+{% if page_obj.previous_page_number != 1 %}
+...
+<a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+{% endif %}
+{% endif %}
+
+{# Информация о текущей странице #}
+{{ page_obj.number }}
+
+{# Информация о следующих страницах #}
+{% if page_obj.has_next %}
+<a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+{% if paginator.num_pages != page_obj.next_page_number %}
+...
+<a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+{% endif %}
+{% endif %}
+{% endblock content %}
+
+
+

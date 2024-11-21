@@ -1,0 +1,9 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+<h1>Ограничения</h1>
+<hr>
+<h2>Уважаемый {{author}}, запрещено публиковать больше пяти объявлений в день</h2>
+<hr>
+<button> <a href="{% url 'Posts_list' %}"> Вернутся на начальную страницу </a></button>
+{% endblock content %}

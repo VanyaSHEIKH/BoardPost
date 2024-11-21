@@ -1,0 +1,60 @@
+<!--  наследуемся от шаблона default.html.html, который мы создавали для flatpages -->
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+{% load custom_tags %}
+
+
+{% block title %}
+Posts_search
+{% endblock title %}
+
+
+{% block content %}
+    <!--<label for="start">Start date:</label>
+
+    <input type="date" id="start" name="trip-start" value="2018-07-22" min="2018-01-01" max="2025-12-31" />-->
+    <h1>Выбранные объявления</h1>
+    <h1>{{ posts|length }}</h1>
+    <form action="" method="get">
+        {{ filterset.form.as_p }}
+        <input type="submit" value="Найти" />
+    </form>
+
+    <hr>
+    {% if posts %}
+        <table>
+            {% for post in posts %}
+            <tr>
+                <td>{{ post.title|censor }}</td>
+                <td>{{ post.date_in|date:'d M Y' }}</td>
+                <td>{{ post.text|truncatewords:20|censor}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <h2>На данный момент объявления отсутствуют!</h2>
+    {% endif %}
+    {# Добавляем пагинацию на страницу #}
+
+    {# Информация о предыдущих страницах #}
+    {% if page_obj.has_previous %}
+        <a href="?{% url_replace page=1 %}">1</a>
+        {% if page_obj.previous_page_number != 1 %}
+            ...
+            <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+        {% endif %}
+    {% endif %}
+
+    {# Информация о текущей странице #}
+    {{ page_obj.number }}
+
+    {# Информация о следующих страницах #}
+    {% if page_obj.has_next %}
+        <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+        {% if paginator.num_pages != page_obj.next_page_number %}
+            ...
+            <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+        {% endif %}
+    {% endif %}
+{% endblock content %}
